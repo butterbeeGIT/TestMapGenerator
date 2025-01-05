@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
 
 namespace TestMapGenerator
 {
@@ -40,44 +36,20 @@ namespace TestMapGenerator
             x1 = AddSymbolicHorizontalCorridorOnMap(x1, y1, x2, y2, map);
             AddSymbolicVerticalCorridorOnMap(x1, y1, x2, y2, map);
 
-            //// Создаём горизонтальный коридор.
-            //while (x1 != x2)
-            //{
-            //    int yOffset = y1; // Ограничиваем смещение, чтобы не выйти за границы карты.
-            //    char originalSymb = map[yOffset, x1];
-            //    int nextX = x1 < x2 ? 1 : -1;
-            //    if (originalSymb == '#' && map[yOffset, nextX] == '#')
-            //    {
-
-            //    }
-            //    map[yOffset, x1] = originalSymb switch
-            //    {
-            //        ' ' => '-',
-            //        '#' => 'D',
-            //        _ => originalSymb
-            //    };
-            //    x1 += x1 < x2 ? 1 : -1; // Двигаемся к целевой точке.
-            //}
-
-            //// Создаём вертикальный коридор.
-            //while (y1 != y2)
-            //{
-            //    int xOffset = x1; // Ограничиваем смещение.
-            //    char originalSymb = map[y1, xOffset];
-
-            //    map[y1, xOffset] = originalSymb switch
-            //    {
-            //        ' ' => '|',
-            //        '#' => 'D',
-            //        _ => originalSymb
-            //    };
-            //    y1 += y1 < y2 ? 1 : -1; // Двигаемся к целевой точке.
-            //}
+           
         }
 
-
+        /// <summary>
+        /// строит горизонтальный коридор при необходимости
+        /// </summary>
+        /// <param name="x1">начальная точка</param>
+        /// <param name="y1"></param>
+        /// <param name="x2">конечная точка</param>
+        /// <param name="y2"></param>
+        /// <param name="map">символьная карта</param>
+        /// <returns>координата x до которой удалось построить коридор</returns>
         public static int AddSymbolicHorizontalCorridorOnMap(int x1, int y1, int x2, int y2, char[,] map)
-        {//System.StackOverflowException: "Exception_WasThrown"
+        {
 
             while (x1 != x2)
             {
@@ -86,7 +58,11 @@ namespace TestMapGenerator
                 int nextX = x1 < x2 ? x1 + 1 : x1-1;
                 if (originalSymb == '#' && map[yOffset, nextX] == '#')
                 {
-                    y1 = AddSymbolicVerticalCorridorOnMap(x1, y1, x2, y2, map);
+                    if (y1 != y2) 
+                    {
+                        y1 = AddSymbolicVerticalCorridorOnMap(x1, y1, x2, y2, map);
+                        break; 
+                    }
                     originalSymb = map[yOffset, x1];
                 }
                 
@@ -101,6 +77,15 @@ namespace TestMapGenerator
             return x1;
         }
 
+        /// <summary>
+        /// строит вертикальный коридор при необходимости
+        /// </summary>
+        /// <param name="x1">начальная точка</param>
+        /// <param name="y1"></param>
+        /// <param name="x2">конечная точка</param>
+        /// <param name="y2"></param>
+        /// <param name="map">символьная карта</param>
+        /// <returns>координата y до которой удалось построить коридор</returns>
 
         public static int AddSymbolicVerticalCorridorOnMap(int x1, int y1, int x2, int y2, char[,] map)
         {
@@ -111,7 +96,12 @@ namespace TestMapGenerator
                 int nextY = y1 < y2 ? y1+1 : y1-1;
                 if (originalSymb == '#' && map[nextY, xOffset] == '#')
                 {
-                    x1 = AddSymbolicHorizontalCorridorOnMap(x1, y1, x2, y2, map);
+                    if (x1 != x2) 
+                    {
+                        x1 = AddSymbolicHorizontalCorridorOnMap(x1, y1, x2, y2, map);
+                        break;
+                    }
+                   
                     originalSymb = map[y1, xOffset];
                 }
                 map[y1, xOffset] = originalSymb switch
